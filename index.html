@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The S Line, an index of monthly questions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F6F7;
+    --card:#FFFFFF;
+    --ink:#14161A;
+    --body-text:#2F353B;
+    --muted:#68737C;
+    --hairline:#DEE3E6;
+    --water:#E9F1F7;
+    --rail:#C9D1D6;
+    --l-red:#EE352E;
+    --l-orange:#FF6319;
+    --l-yellow:#FCCC0A;
+    --l-green:#00933C;
+    --l-blue:#0039A6;
+    --l-purple:#B933AD;
+    --serif:"Newsreader", Georgia, "Times New Roman", serif;
+    --sans:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --radius-card:16px;
+    --radius-pill:999px;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    font-size:17.5px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* structural guide rails at the content column edges */
+  body::before, body::after{
+    content:""; position:fixed; top:0; bottom:0; width:1px;
+    background:var(--hairline); z-index:4; pointer-events:none;
+  }
+  body::before{ left:calc(50% - 560px); }
+  body::after{ left:calc(50% + 560px); }
+  @media (max-width:1220px){ body::before, body::after{ display:none; } }
+
+  a{ color:inherit; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 28px; }
+  .skip{
+    position:absolute; left:-9999px; top:0;
+    background:var(--ink); color:var(--paper);
+    padding:10px 18px; border-radius:0 0 10px 0;
+    font-family:var(--sans); font-size:14px; text-decoration:none;
+  }
+  .skip:focus{ left:0; z-index:50; }
+  :focus-visible{ outline:2px solid var(--l-blue); outline-offset:3px; border-radius:4px; }
+
+  /* ---------- header: station signage ---------- */
+  header{ border-bottom:1px solid var(--hairline); background:var(--paper); position:relative; z-index:2; }
+  .masthead{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 0;
+  }
+  .mark{ display:flex; align-items:center; gap:14px; text-decoration:none; }
+  .bullet{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:34px; height:34px; border-radius:50%;
+    font-family:var(--sans); font-weight:700; font-size:17px;
+    color:#fff; flex:none; user-select:none;
+  }
+  .bullet.small{ width:24px; height:24px; font-size:13px; }
+  .bullet.tiny{ width:18px; height:18px; font-size:10.5px; }
+  .b-red{ background:var(--l-red); }
+  .b-orange{ background:var(--l-orange); }
+  .b-yellow{ background:var(--l-yellow); color:var(--ink); }
+  .b-green{ background:var(--l-green); }
+  .b-blue{ background:var(--l-blue); }
+  .b-purple{ background:var(--l-purple); }
+  .mark-text{ line-height:1.15; }
+  .mark-text strong{
+    font-family:var(--sans); font-weight:700; font-size:18px; letter-spacing:-0.01em;
+    display:block;
+  }
+  .mark-text span{ font-family:var(--mono); font-size:11.5px; color:var(--muted); }
+  nav{ display:flex; gap:26px; }
+  nav a{
+    font-family:var(--sans); font-size:14.5px; font-weight:500;
+    text-decoration:none; color:var(--ink); opacity:.82;
+  }
+  nav a:hover{ opacity:1; }
+  .routes-stripe{ display:flex; height:3px; }
+  .routes-stripe span{ flex:1; }
+
+  /* ---------- hero: full-bleed weave ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    border-bottom:1px solid var(--hairline);
+  }
+  .hero-content{
+    position:relative; z-index:1;
+    padding-top:92px; padding-bottom:104px;
+  }
+  .hero h1{
+    font-family:var(--serif); font-weight:500;
+    font-size:clamp(42px, 5.2vw, 64px);
+    line-height:1.06; letter-spacing:-0.015em;
+    max-width:13em; text-wrap:balance;
+  }
+  .hero .lede{
+    margin-top:22px; max-width:27em;
+    font-size:19px; color:var(--body-text);
+  }
+  .path-line{
+    margin-top:24px; font-family:var(--mono); font-size:13px; color:var(--muted);
+  }
+  .path-line b{ color:var(--ink); font-weight:600; }
+  .board{
+    margin-top:40px; display:inline-flex; align-items:center; gap:18px;
+    background:var(--card); border:1px solid var(--hairline);
+    border-radius:12px; padding:14px 20px;
+    box-shadow:0 2px 8px rgba(20,30,45,.08);
+  }
+  .board .dot{
+    width:10px; height:10px; border-radius:50%;
+    background:var(--l-orange); flex:none;
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.25; } }
+  .board .what{ font-family:var(--sans); font-size:14.5px; font-weight:600; }
+  .board .when{ font-family:var(--mono); font-size:12.5px; color:var(--muted); }
+
+  .hero-weave{
+    position:absolute; inset:0; z-index:0;
+    width:100%; height:100%; display:block;
+  }
+
+  /* ---------- platform (current question) ---------- */
+  .platform{ background:var(--water); padding:72px 0; position:relative; z-index:1; }
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:26px; gap:16px; flex-wrap:wrap;
+  }
+  .section-head h2{
+    font-family:var(--sans); font-weight:700; font-size:22px; letter-spacing:-0.01em;
+  }
+  .section-head .note{ font-family:var(--mono); font-size:12.5px; color:var(--muted); }
+
+  .platform-card{
+    background:var(--card); border-radius:var(--radius-card);
+    border:1px solid var(--hairline);
+    box-shadow:0 2px 6px rgba(20,30,45,.05), 0 14px 34px rgba(15,45,90,.08);
+    display:grid; grid-template-columns:1.15fr .85fr;
+    overflow:hidden;
+  }
+  .platform-copy{ padding:44px 48px; }
+  .platform-meta{
+    display:flex; align-items:center; gap:12px;
+    font-family:var(--mono); font-size:13px; color:var(--muted);
+  }
+  .platform-copy h3{
+    margin-top:18px;
+    font-family:var(--serif); font-weight:500;
+    font-size:clamp(26px, 3vw, 36px); line-height:1.16; letter-spacing:-0.01em;
+  }
+  .platform-copy p{ margin-top:16px; color:var(--body-text); max-width:36em; }
+  .transfer{
+    margin-top:14px; font-family:var(--mono); font-size:12.5px; color:var(--muted);
+  }
+  .transfer a{ color:var(--l-blue); text-decoration:none; }
+  .transfer a:hover{ text-decoration:underline; }
+  .btn{
+    display:inline-block; margin-top:26px;
+    font-family:var(--sans); font-size:15px; font-weight:600;
+    background:var(--ink); color:var(--paper);
+    padding:12px 24px; border-radius:var(--radius-pill);
+    text-decoration:none; border:none; cursor:pointer;
+    transition:background .18s ease;
+  }
+  .btn:hover{ background:var(--l-orange); }
+  .platform-art{
+    background:linear-gradient(160deg, #35C06B 0%, #00803A 78%);
+    display:flex; align-items:center; justify-content:center;
+    padding:28px; min-height:320px;
+  }
+  .platform-art svg{ width:100%; max-width:340px; height:auto; }
+
+  /* ---------- index of questions ---------- */
+  .index{ padding:76px 0 40px; border-top:1px solid var(--hairline); position:relative; z-index:1; }
+  .legend{
+    display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px;
+  }
+  .chip{
+    display:inline-flex; align-items:center; gap:9px;
+    font-family:var(--sans); font-size:13.5px; font-weight:500;
+    background:var(--card); color:var(--ink);
+    border:1px solid var(--hairline); border-radius:var(--radius-pill);
+    padding:7px 14px 7px 8px; cursor:pointer;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .chip:hover{ border-color:#AEB9C0; }
+  .chip[aria-pressed="true"]{
+    border-color:var(--ink);
+    box-shadow:0 1px 2px rgba(20,30,45,.08);
+  }
+  .chip.all{ padding:7px 14px; }
+  .legend-note{
+    font-family:var(--mono); font-size:12.5px; color:var(--muted);
+    margin-bottom:22px;
+  }
+
+  .stops{ position:relative; padding-left:44px; }
+  .stops::before{
+    content:""; position:absolute; left:15px; top:14px; bottom:14px;
+    width:4px; border-radius:2px; background:var(--rail);
+  }
+  .stop{
+    position:relative; display:grid;
+    grid-template-columns:66px 86px 40px 1fr auto;
+    gap:0 18px; align-items:baseline;
+    padding:19px 6px; border-bottom:1px solid var(--hairline);
+    text-decoration:none;
+    transition:background .15s ease;
+  }
+  .stop:hover{ background:rgba(233,241,247,.7); }
+  .stop::before{
+    content:""; position:absolute; left:-35px; top:50%;
+    width:12px; height:12px; margin-top:-6px; border-radius:50%;
+    background:var(--paper); border:3px solid var(--dot, #9AA6AD);
+    transition:transform .15s ease;
+  }
+  .stop:hover::before{ transform:scale(1.25); }
+  .stop.now::before{
+    background:var(--dot); width:14px; height:14px; margin-top:-7px;
+    box-shadow:0 0 0 5px rgba(255,99,25,.18);
+  }
+  .stop .no, .stop .date{ font-family:var(--mono); font-size:13px; color:var(--muted); }
+  .stop .q{
+    font-family:var(--serif); font-size:20px; font-weight:500;
+    line-height:1.3; letter-spacing:-0.005em;
+  }
+  .stop .ride{
+    font-family:var(--mono); font-size:12.5px; color:var(--muted);
+    justify-self:end; white-space:nowrap;
+  }
+  .stop .boarding{
+    font-family:var(--sans); font-size:12px; font-weight:700;
+    color:var(--l-orange); justify-self:end; white-space:nowrap;
+  }
+  .stop[hidden]{ display:none; }
+
+  /* ---------- footer: service information ---------- */
+  footer{ border-top:1px solid var(--hairline); margin-top:56px; position:relative; z-index:1; }
+  .footer-grid{
+    display:grid; grid-template-columns:1.3fr .8fr .9fr;
+    gap:48px; padding:56px 0;
+  }
+  .footer-grid h4{
+    font-family:var(--sans); font-size:15px; font-weight:700; margin-bottom:14px;
+  }
+  .footer-grid p{ font-size:15.5px; color:var(--body-text); max-width:34em; }
+  .transfers{ list-style:none; }
+  .transfers li{ margin-bottom:10px; }
+  .transfers a{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--sans); font-size:14.5px; text-decoration:none;
+  }
+  .transfers a:hover span.ring{ background:var(--ink); }
+  .transfers .ring{
+    width:10px; height:10px; border-radius:50%;
+    border:2px solid var(--ink); background:transparent; flex:none;
+    transition:background .15s ease;
+  }
+  .planned p{ font-size:15.5px; color:var(--body-text); }
+  .planned .soon{ font-family:var(--mono); font-size:12.5px; color:var(--muted); display:block; margin-bottom:6px; }
+  .bottom-bar{
+    border-top:1px solid var(--hairline);
+    padding:20px 0 28px;
+    display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:940px){
+    .platform-card{ grid-template-columns:1fr; }
+    .platform-art{ min-height:280px; order:-1; }
+    .footer-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:820px){
+    .hero-weave{ position:static; height:250px; }
+    .hero-content{ padding-top:56px; padding-bottom:44px; }
+  }
+  @media (max-width:640px){
+    .wrap{ padding:0 20px; }
+    nav{ gap:16px; }
+    nav a:last-child{ display:none; }
+    .stop{
+      grid-template-columns:auto auto 1fr; grid-template-rows:auto auto;
+      row-gap:6px; align-items:center;
+    }
+    .stop .q{ grid-column:1 / -1; grid-row:2; font-size:18px; }
+    .stop .ride, .stop .boarding{ justify-self:end; }
+    .platform-copy{ padding:30px 26px; }
+    .footer-grid{ grid-template-columns:1fr; gap:36px; padding:44px 0; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{ scroll-behavior:auto; }
+    .board .dot{ animation:none; }
+    .stop::before, .chip, .btn, .stop{ transition:none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#index">Skip to the index</a>
+
+<header>
+  <div class="wrap masthead">
+    <a class="mark" href="#top" aria-label="The S Line, home">
+      <span class="bullet b-orange">S</span>
+      <span class="mark-text">
+        <strong>The S Line</strong>
+        <span>local service, one stop a month</span>
+      </span>
+    </a>
+    <nav aria-label="Site">
+      <a href="#platform">Now at the platform</a>
+      <a href="#index">Questions</a>
+    </nav>
+  </div>
+  <div class="routes-stripe" aria-hidden="true">
+    <span style="background:var(--l-red)"></span>
+    <span style="background:var(--l-orange)"></span>
+    <span style="background:var(--l-yellow)"></span>
+    <span style="background:var(--l-green)"></span>
+    <span style="background:var(--l-blue)"></span>
+    <span style="background:var(--l-purple)"></span>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= hero: the weave ================= -->
+  <section class="hero">
+    <div class="wrap hero-content">
+      <h1>One question a month, ridden to the last stop.</h1>
+      <p class="lede">A personal site kept like a file and mapped like a transit system. Each month a new question boards, from plant mathematics to music theory, and runs until it reaches some answer.</p>
+      <p class="path-line"><b>questions</b> 1 file in service, updated on the first of the month</p>
+      <div class="board" role="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span>
+          <span class="what">Next arrival: No. 002, October service</span><br>
+          <span class="when" id="countdown">calculating arrival</span>
+        </span>
+      </div>
+    </div>
+
+    <svg class="hero-weave" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="gradO" x1="0" y1="0" x2="0.4" y2="1">
+          <stop offset="0" stop-color="#FFB03B"/><stop offset="1" stop-color="#FF441F"/>
+        </linearGradient>
+        <linearGradient id="gradB" x1="0" y1="0" x2="0.6" y2="1">
+          <stop offset="0" stop-color="#34B6F2"/><stop offset="1" stop-color="#0039A6"/>
+        </linearGradient>
+        <linearGradient id="gradP" x1="0" y1="0" x2="1" y2="0.8">
+          <stop offset="0" stop-color="#D45BC8"/><stop offset="1" stop-color="#8E2BB8"/>
+        </linearGradient>
+        <linearGradient id="gradG" x1="0" y1="0" x2="0.7" y2="1">
+          <stop offset="0" stop-color="#3EC873"/><stop offset="1" stop-color="#00803A"/>
+        </linearGradient>
+        <linearGradient id="gradY" x1="0" y1="0" x2="0.3" y2="1">
+          <stop offset="0" stop-color="#FFE05A"/><stop offset="1" stop-color="#FFA400"/>
+        </linearGradient>
+        <linearGradient id="gradR" x1="0" y1="0" x2="0.8" y2="1">
+          <stop offset="0" stop-color="#FF7A6E"/><stop offset="1" stop-color="#E01F3D"/>
+        </linearGradient>
+        <pattern id="draftGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#14161A" stroke-width="1" opacity="0.05"/>
+        </pattern>
+        <pattern id="draftCross" width="200" height="200" patternUnits="userSpaceOnUse">
+          <path d="M 100 93 V 107 M 93 100 H 107" stroke="#14161A" stroke-width="1" opacity="0.14" fill="none"/>
+        </pattern>
+        <pattern id="halftone" width="7" height="7" patternUnits="userSpaceOnUse">
+          <circle cx="3.5" cy="3.5" r="1.25" fill="#14161A" opacity="0.16"/>
+        </pattern>
+      </defs>
+
+      <!-- drafting field -->
+      <rect x="0" y="0" width="1440" height="560" fill="url(#draftGrid)"/>
+      <rect x="0" y="0" width="1440" height="560" fill="url(#draftCross)"/>
+
+      <!-- under layer: the route passes over these -->
+      <polyline points="1330,-30 1330,120 1400,190 1470,190" fill="none"
+        stroke="var(--l-blue)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+      <circle cx="1330" cy="60" r="6" fill="#F5F6F7" stroke="var(--l-blue)" stroke-width="3"/>
+      <circle cx="60" cy="150" r="70" fill="url(#gradG)"/>
+      <circle cx="60" cy="360" r="11" fill="var(--l-red)"/>
+      <rect x="920" y="40" width="100" height="280" rx="50" fill="url(#gradY)"/>
+      <circle cx="1180" cy="482" r="24" fill="url(#gradR)"/>
+
+      <!-- the route -->
+      <polyline points="-40,470 640,470 810,300 1080,300 1200,420 1480,420"
+        fill="none" stroke="#14161A" stroke-width="7"
+        stroke-linecap="round" stroke-linejoin="round"/>
+
+      <!-- over layer: the route passes under these -->
+      <rect x="940" y="90" width="190" height="290" rx="44" fill="url(#gradB)"/>
+      <rect x="940" y="90" width="190" height="290" rx="44" fill="url(#halftone)"/>
+      <rect x="1150" y="40" width="110" height="260" rx="55" fill="url(#gradO)"/>
+      <rect x="1290" y="372" width="230" height="112" rx="56" fill="url(#gradP)"/>
+      <rect x="1290" y="372" width="230" height="112" rx="56" fill="url(#halftone)" opacity="0.5"/>
+
+      <!-- stations on the visible line -->
+      <circle cx="140" cy="470" r="8" fill="#F5F6F7" stroke="#14161A" stroke-width="3.5"/>
+      <circle cx="400" cy="470" r="8" fill="#F5F6F7" stroke="#14161A" stroke-width="3.5"/>
+      <circle cx="725" cy="385" r="11" fill="#F5F6F7" stroke="#14161A" stroke-width="4"/>
+      <circle cx="1245" cy="420" r="8" fill="#F5F6F7" stroke="#14161A" stroke-width="3.5"/>
+      <circle cx="880" cy="300" r="20" fill="#FF6319"/>
+      <text x="880" y="307" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-weight="700" font-size="21" fill="#FFFFFF">M</text>
+    </svg>
+  </section>
+
+  <!-- ================= now at the platform ================= -->
+  <section class="platform" id="platform">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Now at the platform</h2>
+        <span class="note">weekday service, no delays reported</span>
+      </div>
+      <article class="platform-card">
+        <div class="platform-copy">
+          <div class="platform-meta">
+            <span class="bullet small b-green" aria-label="Botany line">B</span>
+            <span>No. 001</span>
+            <span>2026.09</span>
+            <span>ride: 12 min</span>
+          </div>
+          <h3>Do poisonous plants deviate from the Fibonacci sequence?</h3>
+          <p>Phyllotaxis and the importance of not always asking questions first.</p>
+          <p class="transfer">Transfer available from <a href="#index">No. 002</a>, where the counting started.</p>
+          <a class="btn" href="#index">Board No. 001</a>
+        </div>
+        <div class="platform-art" aria-hidden="true">
+          <svg id="phyllo" viewBox="-110 -110 220 220" xmlns="http://www.w3.org/2000/svg" role="img">
+            <title>A phyllotaxis spiral of dots with a few marked deviants</title>
+          </svg>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ================= index ================= -->
+  <section class="index" id="index">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Index of questions</h2>
+        <span class="note" id="count-note">showing 1 of 1</span>
+      </div>
+
+      <div class="legend" role="group" aria-label="Filter by line">
+        <button class="chip all" data-line="all" aria-pressed="true">All lines</button>
+        <button class="chip" data-line="1" aria-pressed="false"><span class="bullet tiny b-red">1</span>One-offs</button>
+        <button class="chip" data-line="B" aria-pressed="false"><span class="bullet tiny b-green">B</span>Botany</button>
+        <button class="chip" data-line="D" aria-pressed="false"><span class="bullet tiny b-blue">D</span>Design</button>
+        <button class="chip" data-line="L" aria-pressed="false"><span class="bullet tiny b-purple">L</span>Language</button>
+        <button class="chip" data-line="M" aria-pressed="false"><span class="bullet tiny b-orange">M</span>Music</button>
+        <button class="chip" data-line="Q" aria-pressed="false"><span class="bullet tiny b-yellow">Q</span>Quantities</button>
+      </div>
+      <p class="legend-note">six lines in service, colors borrowed from the MTA with thanks</p>
+
+      <div class="stops">
+        <a class="stop now" href="#platform" data-line="B" style="--dot:var(--l-green)">
+          <span class="no">No. 001</span><span class="date">2026.09</span>
+          <span class="bullet small b-green" aria-label="Botany line">B</span>
+          <span class="q">Do poisonous plants deviate further from the Fibonacci sequence?</span>
+          <span class="boarding">now boarding</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= footer ================= -->
+<footer id="service">
+  <div class="wrap footer-grid">
+    <div>
+      <h4>Service information</h4>
+      <p>The S Line is the personal site of Sarrah Ali. One question boards on the first of every month and runs until it reaches some real answer, however long the ride. Sources are cited and dead ends are kept in the record.</p>
+    </div>
+    <div>
+      <h4>Transfers</h4>
+      <ul class="transfers">
+        <li><a href="mailto:isarrahzohair@gmail.com"><span class="ring" aria-hidden="true"></span>Email</a></li>
+      </ul>
+    </div>
+    <div class="planned">
+      <h4>Planned work</h4>
+      <p><span class="soon">No. 002 boards October 1</span>How do clouds form? (figuring things out on my own) Route suggestions for No. 003 are taken at the address above.</p>
+    </div>
+  </div>
+  <div class="wrap bottom-bar">
+    <span>S, 2026. Set in Helvetica, naturally.</span>
+    <span>If you read something, say something.</span>
+  </div>
+</footer>
+
+<script>
+  // Arrival countdown to the first of next month
+  (function(){
+    var el = document.getElementById("countdown");
+    var now = new Date();
+    var next = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    var days = Math.ceil((next - now) / 86400000);
+    el.textContent = days <= 0 ? "boarding today"
+      : days === 1 ? "arrives in 1 day"
+      : "arrives in " + days + " days";
+  })();
+
+  // Phyllotaxis spiral for the current question, with deviants
+  (function(){
+    var svg = document.getElementById("phyllo");
+    if (!svg) return;
+    var GOLDEN = 137.508 * Math.PI / 180;
+    var deviants = { 21:1, 47:1, 76:1, 118:1 };
+    for (var n = 1; n <= 150; n++){
+      var isDev = deviants[n];
+      var angle = n * GOLDEN + (isDev ? 0.35 : 0);
+      var r = 8.1 * Math.sqrt(n);
+      var cx = r * Math.cos(angle);
+      var cy = r * Math.sin(angle);
+      var dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      dot.setAttribute("cx", cx.toFixed(2));
+      dot.setAttribute("cy", cy.toFixed(2));
+      dot.setAttribute("r", isDev ? 4.6 : (1.6 + Math.sqrt(n) * 0.22).toFixed(2));
+      dot.setAttribute("fill", isDev ? "#FCCC0A" : "#FFFFFF");
+      dot.setAttribute("opacity", isDev ? "1" : (0.55 + (n / 150) * 0.45).toFixed(2));
+      if (isDev){
+        dot.setAttribute("stroke", "#14161A");
+        dot.setAttribute("stroke-width", "1.6");
+      }
+      svg.appendChild(dot);
+    }
+  })();
+
+  // Filter the index by line
+  (function(){
+    var chips = document.querySelectorAll(".chip");
+    var stops = document.querySelectorAll(".stop");
+    var note = document.getElementById("count-note");
+    chips.forEach(function(chip){
+      chip.addEventListener("click", function(){
+        var line = chip.getAttribute("data-line");
+        chips.forEach(function(c){ c.setAttribute("aria-pressed", c === chip ? "true" : "false"); });
+        var shown = 0;
+        stops.forEach(function(stop){
+          var match = line === "all" || stop.getAttribute("data-line") === line;
+          if (match){ stop.removeAttribute("hidden"); shown++; }
+          else { stop.setAttribute("hidden", ""); }
+        });
+        note.textContent = "showing " + shown + " of " + stops.length;
+      });
+    });
+  })();
+</script>
+</body>
+</html>
